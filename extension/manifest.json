@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Pause & Report — AI Detector",
+  "version": "1.0.0",
+  "description": "Scan your Google Docs and Word Online documents for robotic-sounding text before submitting.",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "https://docs.google.com/*",
+    "https://www.office.com/*",
+    "https://wordonline.office.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://docs.google.com/document/d/*",
+        "https://www.office.com/*",
+        "https://wordonline.office.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
