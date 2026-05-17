@@ -3,7 +3,7 @@
   'use strict'
 
   const BUTTON_ID = 'pause-and-report-btn'
-  const API_URL = 'https://pause-and-report-ai-detector.vercel.app/api/analyze'
+  const API_URL = 'https://pause-and-report-ai-detector.vercel.app/api'
 
   let btn = null
   let overlay = null

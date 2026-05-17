@@ -32,7 +32,7 @@ But here's the problem — most AI detectors are designed to **catch** you, not 
 | Layer | Technology |
 |-------|-----------|
 | Frontend | [Next.js 14](https://nextjs.org/) (React, TypeScript, Tailwind CSS) |
-| Backend API | [Flask](https://flask.palletsprojects.com/) (Python 3) |
+| Backend API | Next.js API Route (TypeScript) |
 | Analysis Engine | Heuristic classifier (pattern matching, vocabulary analysis, sentence structure scoring) |
 | Chrome Extension | Manifest V3 |
 | Deployment | [Vercel](https://vercel.com/) (frontend + serverless API) |
@@ -43,8 +43,8 @@ But here's the problem — most AI detectors are designed to **catch** you, not 
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌──────────────────┐
-│  Web App    │────▶│  Flask API   │────▶│  Analysis Engine │
-│  (Next.js)  │     │  /api/*      │     │  (heuristic)     │
+│  Web App    │────▶│  Next.js API │────▶│  Analysis Engine │
+│  (Next.js)  │     │  /api/route  │     │  (heuristic)     │
 └─────────────┘     └──────────────┘     └──────────────────┘
         ▲                                        │
         │                                        ▼
@@ -54,7 +54,7 @@ But here's the problem — most AI detectors are designed to **catch** you, not 
 └─────────────┘                          └──────────────────┘
 ```
 
-The Next.js frontend rewrites `/api/*` requests to the Python Flask backend, which runs a heuristic analysis engine that evaluates sentence structure, vocabulary complexity, repetitive patterns, and transitional phrasing.
+The analysis engine runs directly in a Next.js API Route (`src/app/api/route.ts`), evaluating sentence structure, vocabulary complexity, repetitive patterns, and transitional phrasing.
 
 ---
 
@@ -77,7 +77,6 @@ Each sentence gets an **AI score** (0–1). Sentences above the threshold are fl
 
 ### Prerequisites
 
-- Python 3.10+
 - Node.js 18+
 
 ### 1. Clone & Install
@@ -85,29 +84,16 @@ Each sentence gets an **AI score** (0–1). Sentences above the threshold are fl
 ```bash
 git clone https://github.com/VtnDenis/ideator-mvp-pause-and-report-ai-detector
 cd pause-and-report-ai-detector
-```
-
-### 2. Start the API Server
-
-```bash
-cd api
-pip install -r requirements.txt
-python index.py
-```
-
-The API runs on `http://localhost:5001`.
-
-### 3. Start the Frontend
-
-In a separate terminal:
-
-```bash
-# from project root
 npm install
+```
+
+### 2. Start the Dev Server
+
+```bash
 npm run dev
 ```
 
-The app opens at `http://localhost:3000`.
+The app opens at `http://localhost:3000`. The API runs on the same server at `/api`.
 
 ### 4. Use the Chrome Extension
 
@@ -121,7 +107,7 @@ The app opens at `http://localhost:3000`.
 
 ## API Reference
 
-### `POST /api/analyze`
+### `POST /api`
 
 Analyze text for AI-like patterns.
 
@@ -151,9 +137,7 @@ Analyze text for AI-like patterns.
 
 ### `GET /api/health`
 
-```json
-{ "status": "ok", "version": "1.0.0" }
-```
+Not implemented in the Next.js API route — health check is implicit on any request.
 
 ---
 
@@ -161,9 +145,6 @@ Analyze text for AI-like patterns.
 
 ```
 pause-and-report-ai-detector/
-├── api/
-│   ├── index.py            # Flask API with analysis engine
-│   └── requirements.txt    # Python dependencies
 ├── extension/
 │   ├── manifest.json       # Chrome extension manifest V3
 │   ├── popup.html          # Extension popup UI
@@ -172,16 +153,17 @@ pause-and-report-ai-detector/
 │   └── icons/              # Extension icons
 ├── src/
 │   ├── app/
+│   │   ├── api/
+│   │   │   └── route.ts    # Analysis API endpoint
 │   │   ├── globals.css     # Global styles with Tailwind
 │   │   ├── layout.tsx      # Root layout with fonts
 │   │   └── page.tsx        # Main web app page
-│   └── ...                 # Next.js config files
+│   └── ...
 ├── public/
 ├── package.json
 ├── next.config.js
 ├── tailwind.config.js
 ├── tsconfig.json
-├── vercel.json
 └── README.md
 ```
 
@@ -189,23 +171,19 @@ pause-and-report-ai-detector/
 
 ## Deployment
 
-The project is designed to deploy to **Vercel** with zero configuration:
+The project is deployed to **Vercel**. Push to main triggers an automatic redeploy.
+
+Or deploy manually:
 
 ```bash
 npx vercel --prod --yes
 ```
-
-The Vercel deployment automatically:
-- Builds the Next.js frontend
-- Deploys the Flask API as a serverless function
 
 ---
 
 ## Live Demo
 
 [https://pause-and-report-ai-detector.vercel.app](https://pause-and-report-ai-detector.vercel.app)
-
----
 
 ## License
 

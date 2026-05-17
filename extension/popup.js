@@ -30,7 +30,7 @@ document.getElementById('scanBtn').addEventListener('click', async () => {
     const text = results?.[0]?.result
     if (!text || text.length < 20) throw new Error('Could not find enough text on this page. Try selecting text manually first.')
 
-    const API_URL = 'https://pause-and-report-ai-detector.vercel.app/api/analyze'
+    const API_URL = 'https://pause-and-report-ai-detector.vercel.app/api'
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
